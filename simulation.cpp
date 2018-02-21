@@ -6,11 +6,11 @@
 
 
 // Display refresh time
-int refreshMills = 5;
+const int refreshMills = 5;
 
 // Simulation seconds between state updates
 // (large values might cause strange behavior)
-int tickTime = 50;
+const int tickTime = 50;
 
 // Tick counter for view rotation
 int tick = 1;

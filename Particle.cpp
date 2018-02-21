@@ -1,7 +1,7 @@
 #include <cmath>
 
 // arbitrary
-const double G = 6.674 * pow(10, -8);
+const double G = 6.674 * pow(10, -11);
 const int D = 3;
 const double BOUNDS = 300;
 const double REBOUND = 0.75;
@@ -15,12 +15,10 @@ public:
 
     double mass;
 
-
     float color[3];
 
     Particle() {
-        for (int i = 0; i < 3; ++i)
-        {
+        for (int i = 0; i < 3; ++i) {
             color[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         }
 

@@ -10,10 +10,17 @@ const int refreshMills = 5;
 
 // Simulation seconds between state updates
 // (large values might cause strange behavior)
-const int tickTime = 50;
+const int tickTime = 5;
+
+// Scalers. Larger values means smaller picture.
+const double distanceScale = 100;
+const double massScale = 1000;
+
 
 // Tick counter for view rotation
 int tick = 1;
+int xRot = 0;
+int yRot = 0;
 
 // Used for CoM calculation
 double totalMass = -1;
@@ -29,16 +36,18 @@ void initParticles();
 void drawParticles();
 void update(double timeStep);
 void timer(int value);
+void keyboardFunc(unsigned char Key, int x, int y);
 
 
 int main(int argc, char **argv)
 {
-
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
 	glutCreateWindow("Sphere");
 	glEnable(GL_DEPTH_TEST);   // Enable depth testing for z-culling
 	glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
+
+	glutKeyboardFunc(keyboardFunc);
 
 	if (argc > 1) {
 		// LIGHTING SHENANIGANS
@@ -69,22 +78,28 @@ int main(int argc, char **argv)
 void display(void)
 {
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glShadeModel(GL_SMOOTH);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glTranslatef(0, 0, -15.5);
-	glRotatef(30, 1, 0, 0);
-	glRotatef(tick / 15.0, 0, 1, 0);
-	glRotatef(tick / 15.0, 1, 0, 0);
-	glRotatef(tick / 15.0, 0, 0, 1);
-	// glRotatef(90, 1, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	update(tickTime);
+	glShadeModel(GL_SMOOTH);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	// glLoadIdentity();
+	glPushMatrix();
+	
+	glTranslatef(0, 0, -15.5);
+	
+	glRotatef(30, 1, 0, 0);
+
+	glRotatef(xRot, 0, 1, 0);
+	glRotatef(yRot, 1, 0, 0);
+
 	glColor3f(1, 1, 1);
 	glutWireCube(6);
+
+	update(tickTime);
 	drawParticles();
+
 	glFlush();
+	glPopMatrix();
 	tick++;
 }
 
@@ -110,15 +125,10 @@ void timer(int value) {
 //*****************************************************************************
 
 
-double randomFloat() {
-	double pos = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	return pos;
-}
-
 void initParticles() {
 	totalMass = 0;
 	for (int i = 0; i < N; i++) {
-		double mass = 100000 * randomFloat();
+		double mass = 1 * pow(10, 8) * randomFloat();
 		particles[i].mass = mass;
 		totalMass += mass;
 		for (int i = 0; i < D; ++i) {
@@ -141,8 +151,11 @@ void drawParticles() {
 			pos[j] = particles[i].pos[j];
 			cm[j] += (particles[i].mass / totalMass) * pos[j];
 		}
-		glTranslatef(pos[0] / 100, pos[1] / 100, pos[2] / 100);
-		glutSolidSphere(cbrt(particles[i].mass) / 100, 15, 15);
+		glTranslatef(pos[0] / distanceScale,
+		             pos[1] / distanceScale,
+		             pos[2] / distanceScale
+		            );
+		glutSolidSphere(cbrt(particles[i].mass) / massScale, 15, 15);
 		glPopMatrix();
 		// std::cout << particles[i].pos[0] << ", "
 		//           << particles[i].pos[1] << ", "
@@ -151,7 +164,10 @@ void drawParticles() {
 	// Draw center of mass
 	glColor3f(randomFloat(), randomFloat(), randomFloat());
 	glPushMatrix();
-	glTranslatef(cm[0] / 100, cm[1] / 100, cm[2] / 100);
+	glTranslatef(cm[0] / distanceScale,
+	             cm[1] / distanceScale,
+	             cm[2] / distanceScale
+	            );
 	glutSolidSphere(0.1, 15, 15);
 	glPopMatrix();
 }
@@ -167,4 +183,32 @@ void update(double timeStep) {
 	// particles[0].xPos = 0;
 	// particles[0].yPos = 0;
 	// particles[0].zPos = 0;
+}
+
+double randomFloat() {
+	double pos = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	return pos;
+}
+
+void keyboardFunc(unsigned char Key, int x, int y)
+{
+	switch (Key)
+	{
+	case 'd':
+		xRot++;
+		break;
+	case 'a':
+		xRot--;
+		break;
+	case 's':
+		yRot++;
+		break;
+	case 'w':
+		yRot--;
+		break;
+	// case 'e': MenuHandler(8); break;
+	case 27:
+		exit(1);
+		break;
+	};
 }

@@ -21,6 +21,7 @@ const double massScale = 1000;
 int tick = 1;
 int xRot = 0;
 int yRot = 0;
+bool run = true;
 
 // Used for CoM calculation
 double totalMass = -1;
@@ -84,9 +85,9 @@ void display(void)
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	// glLoadIdentity();
 	glPushMatrix();
-	
+
 	glTranslatef(0, 0, -15.5);
-	
+
 	glRotatef(30, 1, 0, 0);
 
 	glRotatef(xRot, 0, 1, 0);
@@ -95,7 +96,9 @@ void display(void)
 	glColor3f(1, 1, 1);
 	glutWireCube(2 * BOUNDS / distanceScale);
 
-	update(tickTime);
+	if (run) {
+		update(tickTime);
+	}
 	drawParticles();
 
 	glFlush();
@@ -108,7 +111,7 @@ void reshape(int x, int y)
 	if (y == 0 || x == 0) return;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(39.0, (GLdouble)x / (GLdouble)y, 0.6, 21.0);
+	gluPerspective(39.0, (GLdouble)x / (GLdouble)y, 0.6, 31.0);
 	glMatrixMode(GL_MODELVIEW);
 	glViewport(0, 0, x, y);  //Use the whole window for rendering
 }
@@ -180,9 +183,6 @@ void update(double timeStep) {
 		// blackHole.gravitate(particles[i], timeStep);
 		particles[i].update(timeStep);
 	}
-	// particles[0].xPos = 0;
-	// particles[0].yPos = 0;
-	// particles[0].zPos = 0;
 }
 
 double randomFloat() {
@@ -206,7 +206,9 @@ void keyboardFunc(unsigned char Key, int x, int y)
 	case 'w':
 		yRot--;
 		break;
-	// case 'e': MenuHandler(8); break;
+	case ' ':
+		run = !run;
+		break;
 	case 27:
 		exit(1);
 		break;

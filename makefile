@@ -1,6 +1,6 @@
 # Building
 CC = g++
-CFLAGS = -lGL -lGLU -lglut
+CFLAGS = -lGL -lGLU -lglut -O3
 OUT = simulation
 IN = simulation.cpp
 

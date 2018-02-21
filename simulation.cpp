@@ -6,16 +6,16 @@
 
 
 // Display refresh time
-const int refreshMills = 5;
+const int REFRESH_MS = 5;
 
 // Simulation seconds between state updates
 // (large values might cause strange behavior)
-const int tickTime = 5;
+const int TICK_TIME = 5;
 
 // Scalers. Larger values means smaller picture.
-const double distanceScale = 100;
-const double massScale = 1000;
-
+const double DISTANCE_SCALE = pow(10, 2);
+const double MASS_SCALE = pow(10, 4);
+const double MAX_MASS = pow(10, 11);
 
 // Tick counter for view rotation
 int tick = 1;
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
-	glutCreateWindow("Sphere");
+	glutCreateWindow("Gravity Simulation");
 	glEnable(GL_DEPTH_TEST);   // Enable depth testing for z-culling
 	glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
 
@@ -90,14 +90,14 @@ void display(void)
 
 	glRotatef(30, 1, 0, 0);
 
-	glRotatef(xRot, 0, 1, 0);
 	glRotatef(yRot, 1, 0, 0);
+	glRotatef(xRot, 0, 1, 0);
 
 	glColor3f(1, 1, 1);
-	glutWireCube(2 * BOUNDS / distanceScale);
+	glutWireCube(2 * BOUNDS / DISTANCE_SCALE);
 
 	if (run) {
-		update(tickTime);
+		update(TICK_TIME);
 	}
 	drawParticles();
 
@@ -119,7 +119,7 @@ void reshape(int x, int y)
 // Called back when timer expired [NEW]
 void timer(int value) {
 	glutPostRedisplay();      // Post re-paint request to activate display()
-	glutTimerFunc(refreshMills, timer, 0); // next timer call milliseconds later
+	glutTimerFunc(REFRESH_MS, timer, 0); // next timer call milliseconds later
 }
 
 
@@ -131,7 +131,7 @@ void timer(int value) {
 void initParticles() {
 	totalMass = 0;
 	for (int i = 0; i < N; i++) {
-		double mass = 1 * pow(10, 8) * randomFloat();
+		double mass = MAX_MASS * randomFloat();
 		particles[i].mass = mass;
 		totalMass += mass;
 		for (int i = 0; i < D; ++i) {
@@ -154,11 +154,11 @@ void drawParticles() {
 			pos[j] = particles[i].pos[j];
 			cm[j] += (particles[i].mass / totalMass) * pos[j];
 		}
-		glTranslatef(pos[0] / distanceScale,
-		             pos[1] / distanceScale,
-		             pos[2] / distanceScale
+		glTranslatef(pos[0] / DISTANCE_SCALE,
+		             pos[1] / DISTANCE_SCALE,
+		             pos[2] / DISTANCE_SCALE
 		            );
-		glutSolidSphere(cbrt(particles[i].mass) / massScale, 15, 15);
+		glutSolidSphere(cbrt(particles[i].mass) / MASS_SCALE, 15, 15);
 		glPopMatrix();
 		// std::cout << particles[i].pos[0] << ", "
 		//           << particles[i].pos[1] << ", "
@@ -167,9 +167,9 @@ void drawParticles() {
 	// Draw center of mass
 	glColor3f(randomFloat(), randomFloat(), randomFloat());
 	glPushMatrix();
-	glTranslatef(cm[0] / distanceScale,
-	             cm[1] / distanceScale,
-	             cm[2] / distanceScale
+	glTranslatef(cm[0] / DISTANCE_SCALE,
+	             cm[1] / DISTANCE_SCALE,
+	             cm[2] / DISTANCE_SCALE
 	            );
 	glutSolidSphere(0.1, 15, 15);
 	glPopMatrix();

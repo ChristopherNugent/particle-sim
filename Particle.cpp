@@ -24,18 +24,6 @@ public:
 
     };
 
-    // Particle(double m, double p[], double v[]) {
-    //     mass = m;
-    //     for (int i = 0; i < D; ++i)
-    //     {
-    //         pos[i] = p[i];
-    //         vel[i] = p
-    //     }
-    //     // xPos = x, yPos = y; zPos = z;
-    //     // xVel = xv, yVel = yv, zVel = zv;
-
-    // }
-
     void update(double timeStep) {
         for (int i = 0; i < D; ++i)
         {

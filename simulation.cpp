@@ -93,7 +93,7 @@ void display(void)
 	glRotatef(yRot, 1, 0, 0);
 
 	glColor3f(1, 1, 1);
-	glutWireCube(6);
+	glutWireCube(2 * BOUNDS / distanceScale);
 
 	update(tickTime);
 	drawParticles();

@@ -2,6 +2,8 @@
 #include <cmath>
 #include <ctime>
 #include <list>
+#include <iostream>
+#include <string.h>
 #include "Particle.cpp"
 
 
@@ -28,7 +30,8 @@ bool run = true;
 bool lighting = false;
 bool trail = true;
 bool box = true;
-
+bool planets = true;
+bool center = true;
 
 // Used for CoM calculation
 
@@ -48,10 +51,12 @@ double randomFloat();
 void initParticles();
 void drawParticles();
 void drawHistory();
+void drawBox();
 void update(double timeStep);
-
+void parseArgs(int argc, char **argv);
 
 int main(int argc, char **argv) {
+	parseArgs(argc, argv);
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
 	glutCreateWindow("Gravity Simulation");
@@ -63,11 +68,10 @@ int main(int argc, char **argv) {
 	// LIGHTING SHENANIGANS
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { 1, 0, 	0 };
+	GLfloat light_position[] = { 1, 1, 	0.5 };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
 	// END LIGHTING SHENANIGANS
 	// END OPENGL SETUP
 
@@ -88,19 +92,14 @@ void display(void) {
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glShadeModel(GL_SMOOTH);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	// glLoadIdentity();
+
 	glPushMatrix();
-
 	glTranslatef(0, 0, -Z_DIST);
-
 	glRotatef(30, 1, 0, 0);
-
 	glRotatef(yRot, 1, 0, 0);
 	glRotatef(xRot, 0, 1, 0);
 
-	glColor3f(1, 1, 1);
-
-	if (box) glutWireCube(2 * bounds / DISTANCE_SCALE);
+	if (box) drawBox();
 	if (run) update(TICK_TIME);
 	if (trail) drawHistory();
 	drawParticles();
@@ -154,18 +153,21 @@ void drawParticles() {
 	}
 	for (int i = 0; i < N; i++) {
 		glColor3f(particles[i].color[0], particles[i].color[1], particles[i].color[2]);
-		glPushMatrix();
+
 		double pos[3] = {0, 0, 0};
 		for (int j = 0; j < D; ++j)	{
 			pos[j] = particles[i].pos[j];
 			cm[j] += (particles[i].mass / totalMass) * pos[j];
 		}
-		glTranslatef(pos[0] / DISTANCE_SCALE,
-		             pos[1] / DISTANCE_SCALE,
-		             pos[2] / DISTANCE_SCALE
-		            );
-		glutSolidSphere(cbrt(particles[i].mass) / MASS_SCALE, 15, 15);
-		glPopMatrix();
+		if (planets) {
+			glPushMatrix();
+			glTranslatef(pos[0] / DISTANCE_SCALE,
+			             pos[1] / DISTANCE_SCALE,
+			             pos[2] / DISTANCE_SCALE
+			            );
+			glutSolidSphere(cbrt(particles[i].mass) / MASS_SCALE, 15, 15);
+			glPopMatrix();
+		}
 		// std::cout << particles[i].pos[0] << ", "
 		//           << particles[i].pos[1] << ", "
 		//           << particles[i].pos[2] << std::endl;
@@ -175,14 +177,16 @@ void drawParticles() {
 		glDisable(GL_LIGHT0);
 	}
 	// Draw center of mass
-	glColor3f(randomFloat(), randomFloat(), randomFloat());
-	glPushMatrix();
-	glTranslatef(cm[0] / DISTANCE_SCALE,
-	             cm[1] / DISTANCE_SCALE,
-	             cm[2] / DISTANCE_SCALE
-	            );
-	glutSolidSphere(0.1, 15, 15);
-	glPopMatrix();
+	if (center) {
+		glColor3f(randomFloat(), randomFloat(), randomFloat());
+		glPushMatrix();
+		glTranslatef(cm[0] / DISTANCE_SCALE,
+		             cm[1] / DISTANCE_SCALE,
+		             cm[2] / DISTANCE_SCALE
+		            );
+		glutSolidSphere(0.1, 15, 15);
+		glPopMatrix();
+	}
 	if (run) {
 		for (int i = 0; i < D; ++i) {
 			history.push_back(cm[i]);
@@ -212,11 +216,21 @@ void drawHistory() {
 		             pos[1] / DISTANCE_SCALE,
 		             pos[2] / DISTANCE_SCALE
 		            );
-		glColor3f(1, 1, 1);
+		glColor3f(0.5, 0.5, 0.5);
+		glColor3f(randomFloat(), randomFloat(), randomFloat());
 		glutSolidCube(0.03);
 		glPopMatrix();
 		length++;
 	}
+}
+
+void drawBox() {
+	if (bounds > 0) {
+		glColor3f(1, 1, 1);
+	} else {
+		glColor3f(1, 0, 0);
+	}
+	glutWireCube(2 * bounds / DISTANCE_SCALE);
 }
 
 void update(double timeStep) {
@@ -249,6 +263,8 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 	case 'b':	box = !box; 			break;
 	case 'l':	lighting = !lighting; 	break;
 	case 't':	trail = !trail; 		break;
+	case 'p':	planets = !planets;		break;
+	case 'c':	center = !center;		break;
 
 	// PAUSE
 	case ' ':	run = !run;	break;
@@ -256,4 +272,15 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 	// EXIT
 	case 27:	exit(1); break;
 	};
+}
+
+void parseArgs(int argc, char **argv) {
+	if (argc > 1 && strcmp(argv[1], "starfield") == 0) {
+		std::cout << "Initializing to starfield..." << std::endl;
+		bounds = -1000;
+		box = false;
+		planets = false;
+		trail = true;
+		center = false;
+	}
 }

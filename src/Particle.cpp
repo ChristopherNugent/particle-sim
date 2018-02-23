@@ -4,7 +4,7 @@
 // arbitrary
 const double G = 6.674 * pow(10, -11);
 const int D = 3;
-const double BOUNDS = 300;
+double bounds = 300;
 const double REBOUND = 0.75;
 
 class Particle {
@@ -30,12 +30,12 @@ public:
         {
             /* code */
 
-            if (pos[i] > BOUNDS && vel[i] > 0) {
+            if (pos[i] > bounds && vel[i] > 0) {
                 vel[i] *= -REBOUND;
-                pos[i] = BOUNDS;
-            } else if (pos[i] < -BOUNDS && vel[i] < 0) {
+                pos[i] = bounds;
+            } else if (pos[i] < -bounds && vel[i] < 0) {
                 vel[i] *= -REBOUND;
-                pos[i] = -BOUNDS;
+                pos[i] = -bounds;
             }
             pos[i] += timeStep * vel[i];
         }

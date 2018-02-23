@@ -17,6 +17,7 @@ const int TICK_TIME = 5;
 const double DISTANCE_SCALE = pow(10, 2);
 const double MASS_SCALE = pow(10, 4);
 const double MAX_MASS = pow(10, 11);
+const double Z_DIST = 15.5;
 
 std::list<double> history;
 
@@ -28,6 +29,7 @@ int yRot = 0;
 bool run = true;
 bool lighting = false;
 bool trail = true;
+bool box = true;
 
 // Used for CoM calculation
 double totalMass = -1;
@@ -91,7 +93,7 @@ void display(void)
 	// glLoadIdentity();
 	glPushMatrix();
 
-	glTranslatef(0, 0, -15.5);
+	glTranslatef(0, 0, -Z_DIST);
 
 	glRotatef(30, 1, 0, 0);
 
@@ -99,8 +101,8 @@ void display(void)
 	glRotatef(xRot, 0, 1, 0);
 
 	glColor3f(1, 1, 1);
-	glutWireCube(2 * BOUNDS / DISTANCE_SCALE);
 
+	if (box) glutWireCube(2 * bounds / DISTANCE_SCALE);
 	if (run) update(TICK_TIME);
 	if (trail) drawHistory();
 	drawParticles();
@@ -189,6 +191,11 @@ void drawParticles() {
 	if (run) {
 		for (int i = 0; i < D; ++i) {
 			history.push_back(cm[i]);
+			if (history.size() > 1000) {
+				for (int i = 0; i < D; ++i) {
+					history.pop_front();
+				}
+			}
 		}
 	}
 }
@@ -216,11 +223,7 @@ void drawHistory() {
 		glPopMatrix();
 		length++;
 	}
-	if (length > 1000) {
-		for (int i = 0; i < D; ++i) {
-			history.pop_front();
-		}
-	}
+
 }
 
 void update(double timeStep) {
@@ -238,10 +241,10 @@ double randomFloat() {
 	return pos;
 }
 
-void keyboardFunc(unsigned char Key, int x, int y)
-{
-	switch (Key)
-	{
+void keyboardFunc(unsigned char Key, int x, int y) {
+	switch (Key) {
+
+	// ROTATE SYSTEM
 	case 'd':
 		xRot++;
 		break;
@@ -254,15 +257,32 @@ void keyboardFunc(unsigned char Key, int x, int y)
 	case 'w':
 		yRot--;
 		break;
+
+	// RESIZE SYSTEM
+	case 'e':
+		bounds++;
+		break;
+	case 'q':
+		bounds --;
+		break;
+
+	// VISUAL TOGGLES
+	case 'b':
+		box = !box;
+		break;
 	case 'l':
 		lighting = !lighting;
 		break;
 	case 't':
 		trail = !trail;
 		break;
+
+	// PAUSE
 	case ' ':
 		run = !run;
 		break;
+
+	// EXIT
 	case 27:
 		exit(1);
 		break;

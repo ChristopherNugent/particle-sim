@@ -2,6 +2,7 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
+#include <list>
 #include "Particle.cpp"
 
 
@@ -17,6 +18,9 @@ const double DISTANCE_SCALE = pow(10, 2);
 const double MASS_SCALE = pow(10, 4);
 const double MAX_MASS = pow(10, 11);
 
+std::list<double> history;
+
+
 // Tick counter for view rotation
 int tick = 1;
 int xRot = 0;
@@ -26,18 +30,20 @@ bool run = true;
 // Used for CoM calculation
 double totalMass = -1;
 
-const int N = 10;
+const int N = 15;
 Particle particles[N];
 
 
 void display(void);
 void reshape(int x, int y);
+void timer(int value);
+void keyboardFunc(unsigned char Key, int x, int y);
+
 double randomFloat();
 void initParticles();
 void drawParticles();
+void drawHistory();
 void update(double timeStep);
-void timer(int value);
-void keyboardFunc(unsigned char Key, int x, int y);
 
 
 int main(int argc, char **argv)
@@ -99,6 +105,7 @@ void display(void)
 	if (run) {
 		update(TICK_TIME);
 	}
+	drawHistory();
 	drawParticles();
 
 	glFlush();
@@ -129,6 +136,7 @@ void timer(int value) {
 
 
 void initParticles() {
+	history = {};
 	totalMass = 0;
 	for (int i = 0; i < N; i++) {
 		double mass = MAX_MASS * randomFloat();
@@ -173,6 +181,41 @@ void drawParticles() {
 	            );
 	glutSolidSphere(0.1, 15, 15);
 	glPopMatrix();
+	if (run) {
+		for (int i = 0; i < D; ++i) {
+			history.push_back(cm[i]);
+		}
+	}
+}
+
+void drawHistory() {
+	auto it = history.begin();
+	for (int i = 0; i < D; ++i)
+	{
+		it++;
+	}
+	int length = 0;
+	while (it != history.end()) {
+		double pos[3] = {0, 0, 0};
+		for (int i = 0; i < D; i++) {
+			pos[i] = *it;
+			it++;
+		}
+		glPushMatrix();
+		glTranslatef(pos[0] / DISTANCE_SCALE,
+		             pos[1] / DISTANCE_SCALE,
+		             pos[2] / DISTANCE_SCALE
+		            );
+		glColor3f(1, 1, 1);
+		glutSolidCube(0.03);
+		glPopMatrix();
+		length++;
+	}
+	if (length > 1000) {
+		for (int i = 0; i < D; ++i) {
+			history.pop_front();
+		}
+	}
 }
 
 void update(double timeStep) {

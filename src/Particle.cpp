@@ -1,4 +1,5 @@
 #include <cmath>
+#include <list>
 
 // arbitrary
 const double G = 6.674 * pow(10, -11);
@@ -10,10 +11,10 @@ class Particle {
 public:
 
     double pos[D];
-
     double vel[D];
 
     double mass;
+
 
     float color[3];
 
@@ -37,7 +38,6 @@ public:
                 pos[i] = -BOUNDS;
             }
             pos[i] += timeStep * vel[i];
-
         }
     }
 

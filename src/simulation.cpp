@@ -51,8 +51,7 @@ void drawHistory();
 void update(double timeStep);
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
 	glutCreateWindow("Gravity Simulation");
@@ -83,8 +82,7 @@ int main(int argc, char **argv)
 }
 
 
-void display(void)
-{
+void display(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -112,8 +110,7 @@ void display(void)
 	tick++;
 }
 
-void reshape(int x, int y)
-{
+void reshape(int x, int y) {
 	if (y == 0 || x == 0) return;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -155,13 +152,11 @@ void drawParticles() {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 	}
-	for (int i = 0; i < N; i++)
-	{
+	for (int i = 0; i < N; i++) {
 		glColor3f(particles[i].color[0], particles[i].color[1], particles[i].color[2]);
 		glPushMatrix();
 		double pos[3] = {0, 0, 0};
-		for (int j = 0; j < D; ++j)
-		{
+		for (int j = 0; j < D; ++j)	{
 			pos[j] = particles[i].pos[j];
 			cm[j] += (particles[i].mass / totalMass) * pos[j];
 		}
@@ -202,8 +197,7 @@ void drawParticles() {
 
 void drawHistory() {
 	auto it = history.begin();
-	for (int i = 0; i < D; ++i)
-	{
+	for (int i = 0; i < D; ++i) {
 		it++;
 	}
 	int length = 0;
@@ -223,7 +217,6 @@ void drawHistory() {
 		glPopMatrix();
 		length++;
 	}
-
 }
 
 void update(double timeStep) {
@@ -237,54 +230,30 @@ void update(double timeStep) {
 }
 
 double randomFloat() {
-	double pos = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	return pos;
+	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
 void keyboardFunc(unsigned char Key, int x, int y) {
 	switch (Key) {
-
 	// ROTATE SYSTEM
-	case 'd':
-		xRot++;
-		break;
-	case 'a':
-		xRot--;
-		break;
-	case 's':
-		yRot++;
-		break;
-	case 'w':
-		yRot--;
-		break;
+	case 'w':	yRot--; break;
+	case 'a':	xRot--; break;
+	case 's':	yRot++; break;
+	case 'd':	xRot++; break;
 
 	// RESIZE SYSTEM
-	case 'e':
-		bounds++;
-		break;
-	case 'q':
-		bounds --;
-		break;
+	case 'e':	bounds++; break;
+	case 'q':	bounds--; break;
 
 	// VISUAL TOGGLES
-	case 'b':
-		box = !box;
-		break;
-	case 'l':
-		lighting = !lighting;
-		break;
-	case 't':
-		trail = !trail;
-		break;
+	case 'b':	box = !box; 			break;
+	case 'l':	lighting = !lighting; 	break;
+	case 't':	trail = !trail; 		break;
 
 	// PAUSE
-	case ' ':
-		run = !run;
-		break;
+	case ' ':	run = !run;	break;
 
 	// EXIT
-	case 27:
-		exit(1);
-		break;
+	case 27:	exit(1); break;
 	};
 }

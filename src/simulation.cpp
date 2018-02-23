@@ -1,7 +1,6 @@
 #include <GL/glut.h>
 #include <cmath>
 #include <ctime>
-#include <iostream>
 #include <list>
 #include "Particle.cpp"
 
@@ -34,7 +33,7 @@ bool box = true;
 // Used for CoM calculation
 
 // NOTE: Small values may require disabling the optimzation flag.
-const int N = 1;
+const int N = 10;
 Particle particles[N];
 double totalMass = -1;
 std::list<double> history;

@@ -1,6 +1,6 @@
 # Building
 CC = g++
-CFLAGS = -lGL -lGLU -lglut -O3
+CFLAGS = -lGL -lGLU -lglut -O3 -std=c++11
 OUT = out/simulation
 IN = src/simulation.cpp
 

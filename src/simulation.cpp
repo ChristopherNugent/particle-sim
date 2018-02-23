@@ -12,18 +12,17 @@ const int REFRESH_MS = 5;
 // Simulation seconds between state updates
 // (large values might cause strange behavior)
 const int TICK_TIME = 5;
+int tick = 1;
 
 // Scalers. Larger values means smaller picture.
 const double DISTANCE_SCALE = pow(10, 2);
 const double MASS_SCALE = pow(10, 4);
-const double MAX_MASS = pow(10, 11);
 const double Z_DIST = 15.5;
 
-std::list<double> history;
+const double MAX_MASS = pow(10, 11);
 
 
-// Tick counter for view rotation
-int tick = 1;
+// Settings adjustible from keyboard
 int xRot = 0;
 int yRot = 0;
 bool run = true;
@@ -31,12 +30,14 @@ bool lighting = false;
 bool trail = true;
 bool box = true;
 
+
 // Used for CoM calculation
-double totalMass = -1;
 
 // NOTE: Small values may require disabling the optimzation flag.
-const int N = 15;
+const int N = 1;
 Particle particles[N];
+double totalMass = -1;
+std::list<double> history;
 
 
 void display(void);

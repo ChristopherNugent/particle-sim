@@ -26,10 +26,13 @@ int tick = 1;
 int xRot = 0;
 int yRot = 0;
 bool run = true;
+bool lighting = false;
+bool trail = true;
 
 // Used for CoM calculation
 double totalMass = -1;
 
+// NOTE: Small values may require disabling the optimzation flag.
 const int N = 15;
 Particle particles[N];
 
@@ -56,19 +59,15 @@ int main(int argc, char **argv)
 
 	glutKeyboardFunc(keyboardFunc);
 
-	if (argc > 1) {
-		// LIGHTING SHENANIGANS
-		GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat mat_shininess[] = { 50.0 };
-		GLfloat light_position[] = { 1, 0, 	0 };
-		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-		glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	// LIGHTING SHENANIGANS
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = { 50.0 };
+	GLfloat light_position[] = { 1, 0, 	0 };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		// END LIGHTING SHENANIGANS
-	}
+	// END LIGHTING SHENANIGANS
 	// END OPENGL SETUP
 
 	srand(time(0));
@@ -102,10 +101,8 @@ void display(void)
 	glColor3f(1, 1, 1);
 	glutWireCube(2 * BOUNDS / DISTANCE_SCALE);
 
-	if (run) {
-		update(TICK_TIME);
-	}
-	drawHistory();
+	if (run) update(TICK_TIME);
+	if (trail) drawHistory();
 	drawParticles();
 
 	glFlush();
@@ -152,6 +149,10 @@ void initParticles() {
 void drawParticles() {
 	double cm[3] = {0, 0, 0};
 	// Draw particles
+	if (lighting) {
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+	}
 	for (int i = 0; i < N; i++)
 	{
 		glColor3f(particles[i].color[0], particles[i].color[1], particles[i].color[2]);
@@ -171,6 +172,10 @@ void drawParticles() {
 		// std::cout << particles[i].pos[0] << ", "
 		//           << particles[i].pos[1] << ", "
 		//           << particles[i].pos[2] << std::endl;
+	}
+	if (lighting) {
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 	}
 	// Draw center of mass
 	glColor3f(randomFloat(), randomFloat(), randomFloat());
@@ -248,6 +253,12 @@ void keyboardFunc(unsigned char Key, int x, int y)
 		break;
 	case 'w':
 		yRot--;
+		break;
+	case 'l':
+		lighting = !lighting;
+		break;
+	case 't':
+		trail = !trail;
 		break;
 	case ' ':
 		run = !run;

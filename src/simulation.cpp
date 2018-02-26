@@ -56,7 +56,6 @@ void update(double timeStep);
 void parseArgs(int argc, char **argv);
 
 int main(int argc, char **argv) {
-	parseArgs(argc, argv);
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
 	glutCreateWindow("Gravity Simulation");
@@ -75,6 +74,8 @@ int main(int argc, char **argv) {
 	// END LIGHTING SHENANIGANS
 	// END OPENGL SETUP
 
+	parseArgs(argc, argv);
+	
 	srand(time(0));
 	initParticles();
 
@@ -275,12 +276,19 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 }
 
 void parseArgs(int argc, char **argv) {
-	if (argc > 1 && strcmp(argv[1], "starfield") == 0) {
-		std::cout << "Initializing to starfield..." << std::endl;
-		bounds = -1000;
-		box = false;
-		planets = false;
-		trail = true;
-		center = false;
+	for (int i = 1; i < argc; i++) {
+		if (strcmp(argv[i], "-s") == 0) {
+			std::cout << "Starting in starfield." << std::endl;
+			bounds = -1000;
+			box = false;
+			planets = false;
+			trail = true;
+			center = false;
+		} else if (strcmp(argv[i], "-f") == 0) {
+			std::cout << "Initiating fullscreen." << std::endl;
+			glutFullScreen();
+		} else {
+			std::cout << "Unrecognized option: " << argv[i] << std::endl;
+		}
 	}
 }

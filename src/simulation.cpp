@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string.h>
 #include "Particle.cpp"
-
+#include "System.cpp"
 
 // Display refresh time
 const int REFRESH_MS = 5;
@@ -20,7 +20,6 @@ const double DISTANCE_SCALE = pow(10, 2);
 const double MASS_SCALE = pow(10, 4);
 const double Z_DIST = 15.5;
 
-const double MAX_MASS = pow(10, 11);
 
 
 // Settings adjustible from keyboard
@@ -36,10 +35,8 @@ bool center = true;
 // Used for CoM calculation
 
 // NOTE: Small values may require disabling the optimzation flag.
-const int N = 10;
-Particle particles[N];
-double totalMass = -1;
-std::list<double> history;
+
+System cheese;
 
 
 void display(void);
@@ -75,9 +72,9 @@ int main(int argc, char **argv) {
 	// END OPENGL SETUP
 
 	parseArgs(argc, argv);
-	
+
 	srand(time(0));
-	initParticles();
+	cheese.initParticles();
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
@@ -101,7 +98,7 @@ void display(void) {
 	glRotatef(xRot, 0, 1, 0);
 
 	if (box) drawBox();
-	if (run) update(TICK_TIME);
+	if (run) cheese.update(TICK_TIME);
 	if (trail) drawHistory();
 	drawParticles();
 
@@ -131,47 +128,28 @@ void timer(int value) {
 //*****************************************************************************
 
 
-void initParticles() {
-	history = {};
-	totalMass = 0;
-	for (int i = 0; i < N; i++) {
-		double mass = MAX_MASS * randomFloat();
-		particles[i].mass = mass;
-		totalMass += mass;
-		for (int i = 0; i < D; ++i) {
-			particles[i].pos[i] = 40 * randomFloat() - 20;
-			particles[i].vel[i] = 10 * randomFloat() - 5;
-		}
-	}
-}
 
 void drawParticles() {
-	double cm[3] = {0, 0, 0};
-	// Draw particles
+	// Draw cheese.particles
 	if (lighting) {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 	}
-	for (int i = 0; i < N; i++) {
-		glColor3f(particles[i].color[0], particles[i].color[1], particles[i].color[2]);
-
-		double pos[3] = {0, 0, 0};
-		for (int j = 0; j < D; ++j)	{
-			pos[j] = particles[i].pos[j];
-			cm[j] += (particles[i].mass / totalMass) * pos[j];
-		}
+	for (int i = 0; i < cheese.N; i++) {
+		glColor3f(cheese.particles[i].color[0], cheese.particles[i].color[1], cheese.particles[i].color[2]);
+		
 		if (planets) {
 			glPushMatrix();
-			glTranslatef(pos[0] / DISTANCE_SCALE,
-			             pos[1] / DISTANCE_SCALE,
-			             pos[2] / DISTANCE_SCALE
+			glTranslatef(cheese.particles[i].pos[0] / DISTANCE_SCALE,
+			             cheese.particles[i].pos[1] / DISTANCE_SCALE,
+			             cheese.particles[i].pos[2] / DISTANCE_SCALE
 			            );
-			glutSolidSphere(cbrt(particles[i].mass) / MASS_SCALE, 15, 15);
+			glutSolidSphere(cbrt(cheese.particles[i].mass) / MASS_SCALE, 15, 15);
 			glPopMatrix();
 		}
-		// std::cout << particles[i].pos[0] << ", "
-		//           << particles[i].pos[1] << ", "
-		//           << particles[i].pos[2] << std::endl;
+		// std::cout << cheese.particles[i].pos[0] << ", "
+		//           << cheese.particles[i].pos[1] << ", "
+		//           << cheese.particles[i].pos[2] << std::endl;
 	}
 	if (lighting) {
 		glDisable(GL_LIGHTING);
@@ -181,32 +159,22 @@ void drawParticles() {
 	if (center) {
 		glColor3f(randomFloat(), randomFloat(), randomFloat());
 		glPushMatrix();
-		glTranslatef(cm[0] / DISTANCE_SCALE,
-		             cm[1] / DISTANCE_SCALE,
-		             cm[2] / DISTANCE_SCALE
+		glTranslatef(cheese.com.pos[0] / DISTANCE_SCALE,
+		             cheese.com.pos[1] / DISTANCE_SCALE,
+		             cheese.com.pos[2] / DISTANCE_SCALE
 		            );
 		glutSolidSphere(0.1, 15, 15);
 		glPopMatrix();
 	}
-	if (run) {
-		for (int i = 0; i < D; ++i) {
-			history.push_back(cm[i]);
-			if (history.size() > 1000) {
-				for (int i = 0; i < D; ++i) {
-					history.pop_front();
-				}
-			}
-		}
-	}
 }
 
 void drawHistory() {
-	auto it = history.begin();
+	auto it = cheese.history.begin();
 	for (int i = 0; i < D; ++i) {
 		it++;
 	}
 	int length = 0;
-	while (it != history.end()) {
+	while (it != cheese.history.end()) {
 		double pos[3] = {0, 0, 0};
 		for (int i = 0; i < D; i++) {
 			pos[i] = *it;
@@ -232,16 +200,6 @@ void drawBox() {
 		glColor3f(1, 0, 0);
 	}
 	glutWireCube(2 * bounds / DISTANCE_SCALE);
-}
-
-void update(double timeStep) {
-	for (int i = 0; i < N; i++) {		// include all particles
-		for (int j = i + 1; j < N; j++) {
-			particles[i].gravitate(particles[j], timeStep);
-		}
-		// blackHole.gravitate(particles[i], timeStep);
-		particles[i].update(timeStep);
-	}
 }
 
 double randomFloat() {

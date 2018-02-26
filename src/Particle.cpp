@@ -1,3 +1,4 @@
+#pragma once
 #include <cmath>
 #include <list>
 
@@ -19,6 +20,11 @@ public:
     float color[3];
 
     Particle() {
+        for(int d = 0; d < D; ++d) {
+            pos[d] = 0;
+            vel[d] = 0;
+        }
+        mass = 0;
         for (int i = 0; i < 3; ++i) {
             color[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         }
@@ -62,5 +68,11 @@ public:
             sum += pow(pos[i] - o.pos[i], 2);
         }
         return sqrt(sum);
+    }
+
+    void setColor(float r, float g, float b) {
+        color[0] = r;
+        color[1] = g;
+        color[2] = b;
     }
 };

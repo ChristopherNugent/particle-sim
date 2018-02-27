@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string.h>
 #include "Particle.cpp"
-#include "System.cpp"
+#include "System.h"
 
 // Display refresh time
 const int REFRESH_MS = 5;

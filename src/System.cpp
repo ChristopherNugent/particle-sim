@@ -24,7 +24,7 @@ public:
             double mass = MAX_MASS * randomFloat();
             particles[i].mass = mass;
             totalMass += mass;
-            for (int i = 0; i < D; ++i) {
+            for (int i = 0; i < Particle::D; ++i) {
                 particles[i].pos[i] = 40 * randomFloat() - 20;
                 particles[i].vel[i] = 10 * randomFloat() - 5;
             }
@@ -44,21 +44,21 @@ public:
             p.mass = groupMass;
             // calc position
             for (int j = group * GROUP_SIZE; j < (group + 1) * GROUP_SIZE && j < N; j++) {
-                for (int d = 0; d < D; d++) {
+                for (int d = 0; d < Particle::D; d++) {
                     p.pos[d] += particles[j].pos[d] * particles[j].mass / groupMass;
                 }
             }
             coms[group] = p;
-            for (int d = 0; d < D; d++) {
+            for (int d = 0; d < Particle::D; d++) {
                 c.pos[d] += p.pos[d] * p.mass / totalMass;
             }
         }
         com = c;
-        for (int d = 0; d < D; d++) {
+        for (int d = 0; d < Particle::D; d++) {
             history.push_back(c.pos[d]);
 
             if (history.size() > 1000) {
-                for (int i = 0; i < D; ++i) {
+                for (int i = 0; i < Particle::D; ++i) {
                     history.pop_front();
                 }
             }

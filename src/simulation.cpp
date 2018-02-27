@@ -170,13 +170,13 @@ void drawParticles() {
 
 void drawHistory() {
 	auto it = cheese.history.begin();
-	for (int i = 0; i < D; ++i) {
+	for (int i = 0; i < Particle::D; ++i) {
 		it++;
 	}
 	int length = 0;
 	while (it != cheese.history.end()) {
 		double pos[3] = {0, 0, 0};
-		for (int i = 0; i < D; i++) {
+		for (int i = 0; i < Particle::D; i++) {
 			pos[i] = *it;
 			it++;
 		}

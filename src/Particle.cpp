@@ -3,14 +3,14 @@
 #include <list>
 
 // arbitrary
-const double G = 6.674 * pow(10, -11);
-const int D = 3;
 double bounds = 300;
-const double REBOUND = 0.75;
 
 class Particle {
 public:
 
+    static const int D = 3;
+    static constexpr double G = 6.674 * pow(10, -11);
+    static constexpr double REBOUND = 0.75;
     double pos[D];
     double vel[D];
 
@@ -20,7 +20,7 @@ public:
     float color[3];
 
     Particle() {
-        for(int d = 0; d < D; ++d) {
+        for (int d = 0; d < D; ++d) {
             pos[d] = 0;
             vel[d] = 0;
         }

@@ -1,10 +1,7 @@
 #include <GL/glut.h>
-#include <cmath>
-#include <ctime>
-#include <list>
-#include <iostream>
 #include <string.h>
-#include "Particle.h"
+#include <iostream>
+#include <cmath>
 #include "System.h"
 
 // Display refresh time
@@ -74,7 +71,6 @@ int main(int argc, char **argv) {
 
 	parseArgs(argc, argv);
 
-	srand(time(0));
 	pSys.initParticles();
 
 	glutDisplayFunc(display);
@@ -202,7 +198,9 @@ void drawBox() {
 }
 
 double randomFloat() {
-	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float r = rand();
+	float rMax = RAND_MAX;
+	return r / rMax;
 }
 
 void keyboardFunc(unsigned char Key, int x, int y) {

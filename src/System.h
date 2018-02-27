@@ -12,8 +12,7 @@ private:
 
 public:
     static constexpr double MAX_MASS = pow(10, 11);
-
-    static const int N = 20;
+    static const int N = 15;
 
     Particle particles[N];
     Particle com;

@@ -9,6 +9,7 @@ System::System() {
 }
 
 void System::initParticles() {
+    srand(time(0));
     history = {};
     totalMass = 0;
     for (int i = 0; i < N; i++) {
@@ -52,7 +53,9 @@ void System::update(double timeStep) {
 }
 
 double System::randomFloat() {
-    return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float r = rand();
+    float rMax = RAND_MAX;
+    return r/rMax;
 }
 
 void System::printPositions() {

@@ -1,6 +1,5 @@
 #pragma once
 #include <cmath>
-#include <list>
 
 // arbitrary
 double bounds = 300;

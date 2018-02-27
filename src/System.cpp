@@ -1,3 +1,6 @@
+#ifndef SYSTEM
+#define SYSTEM
+
 #include "System.h"
 
 System::System() {
@@ -21,36 +24,21 @@ void System::initParticles() {
 
 void System::updateCOMS() {
     Particle c;
-    for (int group = 0; group < NUM_GROUPS; group++) {      // per group
-        Particle p;
-        p.setColor(1, 0, 0);
-        double groupMass = 0;
-        // sum total mass
-        for (int j = group * GROUP_SIZE; j < (group + 1) * GROUP_SIZE && j < N; j++) {
-            groupMass += particles[j].mass;
-        }
-        p.mass = groupMass;
-        // calc position
-        for (int j = group * GROUP_SIZE; j < (group + 1) * GROUP_SIZE && j < N; j++) {
-            for (int d = 0; d < Particle::D; d++) {
-                p.pos[d] += particles[j].pos[d] * particles[j].mass / groupMass;
-            }
-        }
-        coms[group] = p;
+    for (int i = 0; i < N; i++) {
+        Particle p = particles[i];
         for (int d = 0; d < Particle::D; d++) {
             c.pos[d] += p.pos[d] * p.mass / totalMass;
         }
     }
-    com = c;
     for (int d = 0; d < Particle::D; d++) {
         history.push_back(c.pos[d]);
-
-        if (history.size() > 1000) {
-            for (int i = 0; i < Particle::D; ++i) {
-                history.pop_front();
-            }
+    }
+    if (history.size() > 1000) {
+        for (int d = 0; d < Particle::D; d++) {
+            history.pop_front();
         }
     }
+    com = c;
 }
 
 void System::update(double timeStep) {
@@ -67,3 +55,15 @@ double System::randomFloat() {
     return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
+void System::printPositions() {
+    for (int i = 0; i < N; ++i) {
+        Particle p = particles[i];
+        std::cout << "Particle " << i << ": Mass = " << p.mass << ", Position = (" << p.pos[0];
+        for (int d = 1; d < Particle::D; d++) {
+            std::cout << ", " << p.pos[d];
+        }
+        std::cout << ")" << std::endl;
+    }
+}
+
+#endif

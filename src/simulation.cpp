@@ -4,7 +4,7 @@
 #include <list>
 #include <iostream>
 #include <string.h>
-#include "Particle.cpp"
+#include "Particle.h"
 #include "System.h"
 
 // Display refresh time
@@ -31,6 +31,7 @@ bool trail = true;
 bool box = true;
 bool planets = true;
 bool center = true;
+bool debug = false;
 
 // Used for CoM calculation
 
@@ -100,6 +101,7 @@ void display(void) {
 	if (box) drawBox();
 	if (run) pSys.update(TICK_TIME);
 	if (trail) drawHistory();
+	if (debug) pSys.printPositions();
 	drawParticles();
 
 	glFlush();
@@ -137,7 +139,7 @@ void drawParticles() {
 	}
 	for (int i = 0; i < pSys.N; i++) {
 		glColor3f(pSys.particles[i].color[0], pSys.particles[i].color[1], pSys.particles[i].color[2]);
-		
+
 		if (planets) {
 			glPushMatrix();
 			glTranslatef(pSys.particles[i].pos[0] / DISTANCE_SCALE,
@@ -147,9 +149,6 @@ void drawParticles() {
 			glutSolidSphere(cbrt(pSys.particles[i].mass) / MASS_SCALE, 15, 15);
 			glPopMatrix();
 		}
-		// std::cout << pSys.particles[i].pos[0] << ", "
-		//           << pSys.particles[i].pos[1] << ", "
-		//           << pSys.particles[i].pos[2] << std::endl;
 	}
 	if (lighting) {
 		glDisable(GL_LIGHTING);
@@ -245,6 +244,8 @@ void parseArgs(int argc, char **argv) {
 		} else if (strcmp(argv[i], "-f") == 0) {
 			std::cout << "Initiating fullscreen." << std::endl;
 			glutFullScreen();
+		} else if (strcmp(argv[i], "-d") == 0) {
+			debug = true;
 		} else {
 			std::cout << "Unrecognized option: " << argv[i] << std::endl;
 		}

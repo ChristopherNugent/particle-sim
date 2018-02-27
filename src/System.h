@@ -1,8 +1,9 @@
-#ifndef SYSTEM
-#define SYSTEM
+#ifndef SYSTEM_H
+#define SYSTEM_H
 
 #include <list>
-#include "Particle.cpp"
+#include <iostream>
+#include "Particle.h"
 
 class System {
 private:
@@ -15,7 +16,6 @@ public:
     static const int N = 20;
 
     Particle particles[N];
-    Particle coms[NUM_GROUPS];
     Particle com;
 
     double totalMass;
@@ -26,6 +26,7 @@ public:
     System();
     void initParticles();
     void update(double);
+    void printPositions();
 };
 
 #endif

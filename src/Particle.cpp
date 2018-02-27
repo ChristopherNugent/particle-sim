@@ -1,3 +1,6 @@
+#ifndef PARTICLE
+#define PARTICLE
+
 #include "Particle.h"
 
 Particle::Particle() {
@@ -56,3 +59,5 @@ void Particle::setColor(float r, float g, float b) {
     color[1] = g;
     color[2] = b;
 }
+
+#endif

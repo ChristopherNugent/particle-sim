@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-
+#include <stdlib.h>
 // arbitrary
 
 class Particle {

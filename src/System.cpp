@@ -1,9 +1,11 @@
+#include <list>
 #include "Particle.cpp"
+
 
 class System {
 public:
     static constexpr double MAX_MASS = pow(10, 11);
-    static const int N = 10;
+    static const int N = 15;
     static constexpr int NUM_GROUPS = sqrt(N) + 1;
     static constexpr int GROUP_SIZE = sqrt(N);
 
@@ -28,9 +30,9 @@ public:
             double mass = MAX_MASS * randomFloat();
             particles[i].mass = mass;
             totalMass += mass;
-            for (int i = 0; i < Particle::D; ++i) {
-                particles[i].pos[i] = 40 * randomFloat() - 20;
-                particles[i].vel[i] = 10 * randomFloat() - 5;
+            for (int j = 0; j < Particle::D; ++j) {
+                particles[i].pos[j] = 40 * randomFloat() - 20;
+                particles[i].vel[j] = 10 * randomFloat() - 5;
             }
         }
     }

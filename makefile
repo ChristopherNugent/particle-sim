@@ -8,15 +8,26 @@ IN = src/simulation.cpp
 CLANG_STYLE = {BasedOnStyle: google, IndentWidth: 4}
 
 
-mainmake: $(IN)
+mainmake: simulation.o Particle.o System.o
 	mkdir -p out
-	$(CC) $(IN) -o $(OUT) $(CFLAGS)
+	$(CC) -o $(OUT) Particle.o System.o simulation.o $(CFLAGS) 
+
+simulation.o: src/simulation.cpp
+	$(CC) $(CFLAGS) -c src/simulation.cpp
+
+Particle.o: src/Particle.cpp
+	$(CC) $(CFLAGS) -c src/Particle.cpp
+
+System.o: src/System.cpp
+	$(CC) $(CFLAGS) -c src/System.cpp
+
+test.o: src/test.cpp
+	$(CC) $(CFLAGS) -c src/test.cpp
 
 .PHONY: clean
 
-clean: $(OUT)
-	rm  -r out
-
+clean:
+	rm -r -f out/ *.o a.out 
 .PHONY: format
 
 format: $(IN)

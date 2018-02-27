@@ -2,7 +2,6 @@
 #include <cmath>
 
 // arbitrary
-double bounds = 300;
 
 class Particle {
 public:
@@ -30,7 +29,7 @@ public:
 
     };
 
-    void update(double timeStep) {
+    void update(double timeStep, double bounds) {
         for (int i = 0; i < D; ++i)
         {
             /* code */

@@ -36,7 +36,7 @@ bool center = true;
 
 // NOTE: Small values may require disabling the optimzation flag.
 
-System cheese;
+System pSys;
 
 
 void display(void);
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
 	parseArgs(argc, argv);
 
 	srand(time(0));
-	cheese.initParticles();
+	pSys.initParticles();
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
@@ -98,7 +98,7 @@ void display(void) {
 	glRotatef(xRot, 0, 1, 0);
 
 	if (box) drawBox();
-	if (run) cheese.update(TICK_TIME);
+	if (run) pSys.update(TICK_TIME);
 	if (trail) drawHistory();
 	drawParticles();
 
@@ -130,26 +130,26 @@ void timer(int value) {
 
 
 void drawParticles() {
-	// Draw cheese.particles
+	// Draw pSys.particles
 	if (lighting) {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 	}
-	for (int i = 0; i < cheese.N; i++) {
-		glColor3f(cheese.particles[i].color[0], cheese.particles[i].color[1], cheese.particles[i].color[2]);
+	for (int i = 0; i < pSys.N; i++) {
+		glColor3f(pSys.particles[i].color[0], pSys.particles[i].color[1], pSys.particles[i].color[2]);
 		
 		if (planets) {
 			glPushMatrix();
-			glTranslatef(cheese.particles[i].pos[0] / DISTANCE_SCALE,
-			             cheese.particles[i].pos[1] / DISTANCE_SCALE,
-			             cheese.particles[i].pos[2] / DISTANCE_SCALE
+			glTranslatef(pSys.particles[i].pos[0] / DISTANCE_SCALE,
+			             pSys.particles[i].pos[1] / DISTANCE_SCALE,
+			             pSys.particles[i].pos[2] / DISTANCE_SCALE
 			            );
-			glutSolidSphere(cbrt(cheese.particles[i].mass) / MASS_SCALE, 15, 15);
+			glutSolidSphere(cbrt(pSys.particles[i].mass) / MASS_SCALE, 15, 15);
 			glPopMatrix();
 		}
-		// std::cout << cheese.particles[i].pos[0] << ", "
-		//           << cheese.particles[i].pos[1] << ", "
-		//           << cheese.particles[i].pos[2] << std::endl;
+		// std::cout << pSys.particles[i].pos[0] << ", "
+		//           << pSys.particles[i].pos[1] << ", "
+		//           << pSys.particles[i].pos[2] << std::endl;
 	}
 	if (lighting) {
 		glDisable(GL_LIGHTING);
@@ -159,9 +159,9 @@ void drawParticles() {
 	if (center) {
 		glColor3f(randomFloat(), randomFloat(), randomFloat());
 		glPushMatrix();
-		glTranslatef(cheese.com.pos[0] / DISTANCE_SCALE,
-		             cheese.com.pos[1] / DISTANCE_SCALE,
-		             cheese.com.pos[2] / DISTANCE_SCALE
+		glTranslatef(pSys.com.pos[0] / DISTANCE_SCALE,
+		             pSys.com.pos[1] / DISTANCE_SCALE,
+		             pSys.com.pos[2] / DISTANCE_SCALE
 		            );
 		glutSolidSphere(0.1, 15, 15);
 		glPopMatrix();
@@ -169,12 +169,12 @@ void drawParticles() {
 }
 
 void drawHistory() {
-	auto it = cheese.history.begin();
+	auto it = pSys.history.begin();
 	for (int i = 0; i < Particle::D; ++i) {
 		it++;
 	}
 	int length = 0;
-	while (it != cheese.history.end()) {
+	while (it != pSys.history.end()) {
 		double pos[3] = {0, 0, 0};
 		for (int i = 0; i < Particle::D; i++) {
 			pos[i] = *it;
@@ -194,12 +194,12 @@ void drawHistory() {
 }
 
 void drawBox() {
-	if (bounds > 0) {
+	if (pSys.bounds > 0) {
 		glColor3f(1, 1, 1);
 	} else {
 		glColor3f(1, 0, 0);
 	}
-	glutWireCube(2 * bounds / DISTANCE_SCALE);
+	glutWireCube(2 * pSys.bounds / DISTANCE_SCALE);
 }
 
 double randomFloat() {
@@ -215,8 +215,8 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 	case 'd':	xRot++; break;
 
 	// RESIZE SYSTEM
-	case 'e':	bounds++; break;
-	case 'q':	bounds--; break;
+	case 'e':	pSys.bounds++; break;
+	case 'q':	pSys.bounds--; break;
 
 	// VISUAL TOGGLES
 	case 'b':	box = !box; 			break;
@@ -237,7 +237,7 @@ void parseArgs(int argc, char **argv) {
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-s") == 0) {
 			std::cout << "Starting in starfield." << std::endl;
-			bounds = -1000;
+			pSys.bounds = -1000;
 			box = false;
 			planets = false;
 			trail = true;

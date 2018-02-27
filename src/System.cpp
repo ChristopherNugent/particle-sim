@@ -11,11 +11,15 @@ public:
     Particle coms[NUM_GROUPS];
     Particle com;
 
-    double totalMass = -1;
+    double totalMass;
+    double bounds;
 
     std::list<double> history;
 
-    System() {}
+    System() {
+        totalMass = -1;
+        bounds = 300;
+    }
 
     void initParticles() {
         history = {};
@@ -72,7 +76,7 @@ public:
             for(int j = i + 1; j < N; j++) {
                 particles[i].gravitate(particles[j], timeStep);
             }
-            particles[i].update(timeStep);
+            particles[i].update(timeStep, bounds);
         }
     }
 

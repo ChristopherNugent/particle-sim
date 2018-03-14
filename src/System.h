@@ -24,7 +24,6 @@ public:
     std::list<double> history;
 
     System();
-    void printPositions();
     
     // Mutators
     void initParticles();
@@ -36,10 +35,12 @@ public:
     // Accessors
     int size() const;
     double pos(int i, int d) const;
+    double comPos(int d) const;
     double color(int i, int d) const;
     double mass(int i) const;
-    double comPos(int d) const;
     double getBounds();
+    
+    void printPositions() const;
 };
 
 #endif

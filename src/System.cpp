@@ -3,33 +3,6 @@
 
 #include "System.h"
 
-System::System() {
-    // totalMass = -1;
-    bounds = 300;
-    particles.resize(N);
-}
-
-void System::initParticles() {
-    srand(time(0));
-    history = {};
-    // totalMass = 0;
-    for (int i = 0; i < particles.size(); i++) {
-        randomizeParticle(particles.at(i));
-    }
-}
-
-void System::removeParticle(int i) {
-    if (particles.size() < 1) {
-        return;
-    }
-    if (i < 0) {
-        particles.pop_back();
-        return;
-    }
-    particles.at(i) = particles.back();
-    particles.pop_back();
-}
-
 void System::randomizeParticle(Particle& p) {
     double mass = MAX_MASS * randomFloat();
     p.mass = mass;
@@ -39,10 +12,10 @@ void System::randomizeParticle(Particle& p) {
     }
 }
 
-void System::addParticle() {
-    Particle p;
-    randomizeParticle(p);
-    particles.push_back(p);
+double System::randomFloat() {
+    float r = rand();
+    float rMax = RAND_MAX;
+    return r / rMax;
 }
 
 void System::updateCOMS() {
@@ -68,6 +41,21 @@ void System::updateCOMS() {
     com = c;
 }
 
+System::System() {
+    // totalMass = -1;
+    bounds = 300;
+    particles.resize(N);
+}
+
+void System::initParticles() {
+    srand(time(0));
+    history = {};
+    // totalMass = 0;
+    for (int i = 0; i < particles.size(); i++) {
+        randomizeParticle(particles.at(i));
+    }
+}
+
 void System::update(double timeStep) {
     updateCOMS();
     for (int i = 0; i < particles.size(); i++) {
@@ -78,22 +66,28 @@ void System::update(double timeStep) {
     }
 }
 
-double System::randomFloat() {
-    float r = rand();
-    float rMax = RAND_MAX;
-    return r / rMax;
+void System::addParticle() {
+    Particle p;
+    randomizeParticle(p);
+    particles.push_back(p);
 }
 
-void System::printPositions() {
-    for (int i = 0; i < particles.size(); ++i) {
-        Particle p = particles[i];
-        std::cout << "Particle " << i << ": Mass = " << p.mass << ", Position = (" << p.pos[0];
-        for (int d = 1; d < Particle::D; d++) {
-            std::cout << ", " << p.pos[d];
-        }
-        std::cout << ")" << std::endl;
+void System::removeParticle(int i) {
+    if (particles.size() < 1) {
+        return;
     }
+    if (i < 0) {
+        particles.pop_back();
+        return;
+    }
+    particles.at(i) = particles.back();
+    particles.pop_back();
 }
+
+void System::setBounds(double nBounds) {
+    bounds = nBounds;
+}
+
 
 int System::size() const {
     return particles.size();
@@ -116,12 +110,20 @@ double System::mass(int i) const {
     return particles.at(i).mass;
 }
 
-void System::setBounds(double nBounds) {
-    bounds = nBounds;
-}
 
 double System::getBounds() { 
     return bounds; 
+}
+
+void System::printPositions() const {
+    for (int i = 0; i < particles.size(); ++i) {
+        Particle p = particles[i];
+        std::cout << "Particle " << i << ": Mass = " << p.mass << ", Position = (" << p.pos[0];
+        for (int d = 1; d < Particle::D; d++) {
+            std::cout << ", " << p.pos[d];
+        }
+        std::cout << ")" << std::endl;
+    }
 }
 
 #endif

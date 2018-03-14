@@ -1,3 +1,9 @@
+// Created by Christopher Nugent
+// 
+// The System class is used to manage a system of Particles in
+// an organized manner, and also provides other methods used
+// in rendering and modifying the system.
+
 #ifndef SYSTEM_H
 #define SYSTEM_H
 

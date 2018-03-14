@@ -3,6 +3,8 @@
 
 #include "System.h"
 
+// Randomizes the state of the passed particle according
+// to the bounds of the systes
 void System::randomizeParticle(Particle& p) {
     double mass = MAX_MASS * randomFloat();
     p.mass = mass;
@@ -12,12 +14,14 @@ void System::randomizeParticle(Particle& p) {
     }
 }
 
+// Returns a random float between 0 and 1
 double System::randomFloat() {
     float r = rand();
     float rMax = RAND_MAX;
     return r / rMax;
 }
 
+// Calculates the center of mass based on the current state of the system
 void System::updateCOMS() {
     Particle c;
     double totalMass = 0;
@@ -47,6 +51,7 @@ System::System() {
     particles.resize(N);
 }
 
+// Initializes the system to a random state
 void System::initParticles() {
     srand(time(0));
     history = {};
@@ -56,22 +61,25 @@ void System::initParticles() {
     }
 }
 
+// Moves the system timeStep into the future as one step
 void System::update(double timeStep) {
-    updateCOMS();
     for (int i = 0; i < particles.size(); i++) {
         for (int j = i + 1; j < particles.size(); j++) {
             particles[i].gravitate(particles[j], timeStep);
         }
         particles[i].update(timeStep, bounds);
     }
+    updateCOMS();
 }
 
+// Adds a random particle to the system
 void System::addParticle() {
     Particle p;
     randomizeParticle(p);
     particles.push_back(p);
 }
 
+// Removes the particle at index i from the system
 void System::removeParticle(int i) {
     if (particles.size() < 1) {
         return;
@@ -93,7 +101,7 @@ int System::size() const {
     return particles.size();
 }
 
-
+// Returns the dth dimension of the position of particle i
 double System::pos(int i, int d) const {
     if (i < 0 || i > size() || d < 0 || d >= Particle::D) {
         return 0;
@@ -101,6 +109,7 @@ double System::pos(int i, int d) const {
     return particles.at(i).pos[d];
 }
 
+// Returns the dth dimension of the position of the center of mass
 double System::comPos(int d) const {
     if (d < 0 || d >= Particle::D) {
         return 0;
@@ -108,6 +117,7 @@ double System::comPos(int d) const {
     return com.pos[d];
 }
 
+// Returns the dth dimension oof the color of particle i
 double System::color(int i, int d) const {
     if (i < 0 || i > size() || d < 0 || d > 2) {
         return 0;
@@ -115,6 +125,7 @@ double System::color(int i, int d) const {
     return particles.at(i).color[d];
 }
 
+// returns the mass of particle i
 double System::mass(int i) const {
     if (i < 0 || i > size()) {
         return 0;
@@ -127,6 +138,7 @@ double System::getBounds() const {
     return bounds;
 }
 
+// Returns the particle with position closest to the past particle
 int System::closestParticle(Particle p) const {
     double minDistance = DBL_MAX;
     int result = -1;
@@ -140,6 +152,7 @@ int System::closestParticle(Particle p) const {
     return result;
 }
 
+// Returns the first particle matching the passed color
 int System::getByColor(const float mColor[]) const {
     for (int i = 0; i < size(); i++) {
         int c = 0;

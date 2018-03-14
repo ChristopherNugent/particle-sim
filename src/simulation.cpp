@@ -4,6 +4,8 @@
 #include <cmath>
 #include "System.h"
 
+
+
 // Display refresh time
 const int REFRESH_MS = 5;
 
@@ -51,8 +53,10 @@ void drawBox();
 void update(double timeStep);
 void parseArgs(int argc, char **argv);
 void removeParticleAt(int x, int y);
+void printWelcome();
 
 int main(int argc, char **argv) {
+	printWelcome();
 	glutInit(&argc, argv);
 	glutInitWindowSize(550, 550);
 	glutCreateWindow("Gravity Simulation");
@@ -278,9 +282,29 @@ void removeParticleAt(int x, int y) {
 	}
 	std::cout << "Color: " << color[0] << ", " << color[1] << ", " << color[2] << std::endl;
 	int i = pSys.getByColor(color);
-	std::cout << "Target: particle " << i << " at " 
-			  << "(" << pSys.pos(i, 0) << ", " << pSys.pos(i, 1) << ", " << pSys.pos(i, 2) << ")" << std::endl;
+	std::cout << "Target: particle " << i << " at "
+	          << "(" << pSys.pos(i, 0) << ", " << pSys.pos(i, 1) << ", " << pSys.pos(i, 2) << ")" << std::endl << std::endl;
 	if (i > -1) {
 		pSys.removeParticle(i);
 	}
+}
+
+void printWelcome() {
+	std::cout << "_________________________________________________________________________________" << std::endl
+	          << "Developed by Chris Nugent for CSC313 - Graphics and Visual Computing             |" << std::endl
+	          << "                                                                                 |" << std::endl
+	          << "Welcome to a gravity simulator!                                                  |" << std::endl
+	          << "                                                                                 |" << std::endl
+	          << "There a few buttons you can use to affect the simulation:                        |" << std::endl
+	          << "Spacebar - pause/resume simulation                                               |" << std::endl
+	          << "     n/m - add/remove particle. You can also click on a particle to remove it.   |" << std::endl
+	          << "    wasd - rotate view                                                           |" << std::endl
+	          << "     q/e - shrink/grow box - interesting things happen when negative...          |" << std::endl
+	          << "       t - toggle draw trail                                                     |" << std::endl
+	          << "       b - toggle draw box                                                       |" << std::endl
+	          << "       p - toggle draw particles                                                 |" << std::endl
+	          << "       c - toggle draw center of mass                                            |" << std::endl
+	          << "_________________________________________________________________________________|" << std::endl
+	          << std::endl;
+	;
 }

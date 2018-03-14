@@ -4,6 +4,7 @@
 #include <list>
 #include <iostream>
 #include <vector>
+#include <cfloat>
 #include "Particle.h"
 
 class System {
@@ -39,6 +40,7 @@ public:
     double color(int i, int d) const;
     double mass(int i) const;
     double getBounds() const;
+    int closestParticle(Particle p) const;
 
     void printPositions() const;
 };

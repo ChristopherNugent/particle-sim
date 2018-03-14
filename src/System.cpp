@@ -115,6 +115,19 @@ double System::getBounds() const {
     return bounds; 
 }
 
+int System::closestParticle(Particle p) const {
+    double minDistance = DBL_MAX;
+    int result = -1;
+    for(int i = 0; i < particles.size(); i++) {
+        double distance = p.distance(particles.at(i));
+        if (distance < minDistance) {
+            minDistance = distance;
+            result = i;
+        }
+    }
+    return result;
+}
+
 void System::printPositions() const {
     for (int i = 0; i < particles.size(); ++i) {
         Particle p = particles[i];

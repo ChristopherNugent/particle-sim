@@ -189,12 +189,12 @@ void drawHistory() {
 }
 
 void drawBox() {
-	if (pSys.bounds > 0) {
+	if (pSys.getBounds() > 0) {
 		glColor3f(1, 1, 1);
 	} else {
 		glColor3f(1, 0, 0);
 	}
-	glutWireCube(2 * pSys.bounds / DISTANCE_SCALE);
+	glutWireCube(2 * pSys.getBounds() / DISTANCE_SCALE);
 }
 
 double randomFloat() {
@@ -212,8 +212,8 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 	case 'd':	xRot++; break;
 
 	// RESIZE SYSTEM
-	case 'e':	pSys.bounds++; break;
-	case 'q':	pSys.bounds--; break;
+	case 'e':	pSys.setBounds(pSys.getBounds() + 1); break;
+	case 'q':	pSys.setBounds(pSys.getBounds() - 1); break;
 
 
 	case 'n':	pSys.addParticle();		break;
@@ -237,7 +237,7 @@ void parseArgs(int argc, char **argv) {
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-s") == 0) {
 			std::cout << "Starting in starfield." << std::endl;
-			pSys.bounds = -1000;
+			pSys.setBounds(-1000);
 			box = false;
 			planets = false;
 			trail = true;

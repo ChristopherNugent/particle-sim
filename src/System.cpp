@@ -48,7 +48,7 @@ void System::addParticle() {
 void System::updateCOMS() {
     Particle c;
     double totalMass = 0;
-    for(int i =0; i < particles.size(); i++) {
+    for (int i = 0; i < particles.size(); i++) {
         totalMass += particles.at(i).mass;
     }
     for (int i = 0; i < particles.size(); i++) {
@@ -114,6 +114,14 @@ double System::color(int i, int d) const {
 
 double System::mass(int i) const {
     return particles.at(i).mass;
+}
+
+void System::setBounds(double nBounds) {
+    bounds = nBounds;
+}
+
+double System::getBounds() { 
+    return bounds; 
 }
 
 #endif

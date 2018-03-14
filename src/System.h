@@ -15,14 +15,12 @@ private:
     void updateCOMS();
     double randomFloat();
     void randomizeParticle(Particle& p);
+    double bounds;
 
 public:
     static constexpr double MAX_MASS = pow(10, 11);
 
-    double bounds;
     std::list<double> history;
-
-    // double totalMass;
 
     System();
     void printPositions();
@@ -32,6 +30,7 @@ public:
     void update(double);
     void addParticle();
     void removeParticle(int i=-1);
+    void setBounds(double nBounds);
 
     // Accessors
     int size() const;
@@ -39,6 +38,7 @@ public:
     double color(int i, int d) const;
     double mass(int i) const;
     double comPos(int d) const;
+    double getBounds();
 };
 
 #endif

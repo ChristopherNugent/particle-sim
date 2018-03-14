@@ -34,7 +34,7 @@ void System::randomizeParticle(Particle& p) {
     double mass = MAX_MASS * randomFloat();
     p.mass = mass;
     for (int j = 0; j < Particle::D; ++j) {
-        p.pos[j] = 40 * randomFloat() - 20;
+        p.pos[j] = 2 * bounds * randomFloat() - bounds;
         p.vel[j] = 10 * randomFloat() - 5;
     }
 }
@@ -95,8 +95,25 @@ void System::printPositions() {
     }
 }
 
-int System::size() {
+int System::size() const {
     return particles.size();
+}
+
+
+double System::pos(int i, int d) const {
+    return particles.at(i).pos[d];
+}
+
+double System::comPos(int d) const {
+    return com.pos[d];
+}
+
+double System::color(int i, int d) const {
+    return particles.at(i).color[d];
+}
+
+double System::mass(int i) const {
+    return particles.at(i).mass;
 }
 
 #endif

@@ -8,28 +8,37 @@
 
 class System {
 private:
+    static const int N = 15;
+    std::vector<Particle> particles;
+    Particle com;
+    
     void updateCOMS();
     double randomFloat();
     void randomizeParticle(Particle& p);
-    static const int N = 15;
 
 public:
     static constexpr double MAX_MASS = pow(10, 11);
 
-    std::vector<Particle> particles;
+    double bounds;
     std::list<double> history;
-    Particle com;
 
     // double totalMass;
-    double bounds;
 
     System();
+    void printPositions();
+    
+    // Mutators
     void initParticles();
     void update(double);
-    void printPositions();
-    int size();
     void addParticle();
     void removeParticle(int i=-1);
+
+    // Accessors
+    int size() const;
+    double pos(int i, int d) const;
+    double color(int i, int d) const;
+    double mass(int i) const;
+    double comPos(int d) const;
 };
 
 #endif

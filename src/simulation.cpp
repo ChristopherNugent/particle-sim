@@ -134,15 +134,15 @@ void drawParticles() {
 		glEnable(GL_LIGHT0);
 	}
 	for (int i = 0; i < pSys.size(); i++) {
-		glColor3f(pSys.particles[i].color[0], pSys.particles[i].color[1], pSys.particles[i].color[2]);
+		glColor3f(pSys.color(i, 0), pSys.color(i, 1), pSys.color(i, 2));
 
 		if (planets) {
 			glPushMatrix();
-			glTranslatef(pSys.particles[i].pos[0] / DISTANCE_SCALE,
-			             pSys.particles[i].pos[1] / DISTANCE_SCALE,
-			             pSys.particles[i].pos[2] / DISTANCE_SCALE
+			glTranslatef(pSys.pos(i, 0) / DISTANCE_SCALE,
+			             pSys.pos(i, 1) / DISTANCE_SCALE,
+			             pSys.pos(i, 2) / DISTANCE_SCALE
 			            );
-			glutSolidSphere(cbrt(pSys.particles[i].mass) / MASS_SCALE, 15, 15);
+			glutSolidSphere(cbrt(pSys.mass(i)) / MASS_SCALE, 15, 15);
 			glPopMatrix();
 		}
 	}
@@ -154,9 +154,9 @@ void drawParticles() {
 	if (center) {
 		glColor3f(randomFloat(), randomFloat(), randomFloat());
 		glPushMatrix();
-		glTranslatef(pSys.com.pos[0] / DISTANCE_SCALE,
-		             pSys.com.pos[1] / DISTANCE_SCALE,
-		             pSys.com.pos[2] / DISTANCE_SCALE
+		glTranslatef(pSys.comPos(0) / DISTANCE_SCALE,
+		             pSys.comPos(1) / DISTANCE_SCALE,
+		             pSys.comPos(2) / DISTANCE_SCALE
 		            );
 		glutSolidSphere(0.1, 15, 15);
 		glPopMatrix();

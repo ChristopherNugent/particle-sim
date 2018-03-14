@@ -9,12 +9,13 @@
 class System {
 private:
     static const int N = 15;
+    static double randomFloat();
+    void randomizeParticle(Particle& p);
+    
     std::vector<Particle> particles;
     Particle com;
     
     void updateCOMS();
-    double randomFloat();
-    void randomizeParticle(Particle& p);
     double bounds;
 
 public:

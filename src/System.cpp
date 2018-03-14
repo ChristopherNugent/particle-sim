@@ -95,30 +95,42 @@ int System::size() const {
 
 
 double System::pos(int i, int d) const {
+    if (i < 0 || i > size() || d < 0 || d >= Particle::D) {
+        return 0;
+    }
     return particles.at(i).pos[d];
 }
 
 double System::comPos(int d) const {
+    if (d < 0 || d >= Particle::D) {
+        return 0;
+    }
     return com.pos[d];
 }
 
 double System::color(int i, int d) const {
+    if (i < 0 || i > size() || d < 0 || d > 2) {
+        return 0;
+    }
     return particles.at(i).color[d];
 }
 
 double System::mass(int i) const {
+    if (i < 0 || i > size()) {
+        return 0;
+    }
     return particles.at(i).mass;
 }
 
 
-double System::getBounds() const { 
-    return bounds; 
+double System::getBounds() const {
+    return bounds;
 }
 
 int System::closestParticle(Particle p) const {
     double minDistance = DBL_MAX;
     int result = -1;
-    for(int i = 0; i < particles.size(); i++) {
+    for (int i = 0; i < particles.size(); i++) {
         double distance = p.distance(particles.at(i));
         if (distance < minDistance) {
             minDistance = distance;

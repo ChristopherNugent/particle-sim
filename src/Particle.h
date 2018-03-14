@@ -19,7 +19,7 @@ public:
     Particle();
     void update(double timeStep, double bounds);
     void gravitate(Particle& o, double timeStep);
-    double distance(const Particle& o);
+    double distance(const Particle& o) const;
     void setColor(float r, float g, float b);
 };
 

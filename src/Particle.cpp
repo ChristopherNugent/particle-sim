@@ -45,7 +45,7 @@ void Particle::gravitate(Particle& o, double timeStep) {
     }
 }
 
-double Particle::distance(const Particle& o) {
+double Particle::distance(const Particle& o) const {
     double sum = 0.000001;
     for (int i = 0; i < D; ++i)
     {

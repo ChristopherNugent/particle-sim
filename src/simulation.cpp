@@ -41,6 +41,7 @@ void display(void);
 void reshape(int x, int y);
 void timer(int value);
 void keyboardFunc(unsigned char Key, int x, int y);
+void mouseFunc(int button, int state, int x, int y);
 
 double randomFloat();
 void initParticles();
@@ -49,6 +50,7 @@ void drawHistory();
 void drawBox();
 void update(double timeStep);
 void parseArgs(int argc, char **argv);
+void removeParticleAt(int x, int y);
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
@@ -58,7 +60,7 @@ int main(int argc, char **argv) {
 	glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
 
 	glutKeyboardFunc(keyboardFunc);
-
+	glutMouseFunc(mouseFunc);
 	// LIGHTING SHENANIGANS
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
@@ -250,5 +252,35 @@ void parseArgs(int argc, char **argv) {
 		} else {
 			std::cout << "Unrecognized option: " << argv[i] << std::endl;
 		}
+	}
+}
+
+void mouseFunc(int button, int state, int x, int y) {
+	if (state == GLUT_DOWN) {
+		switch (button) {
+		case GLUT_LEFT_BUTTON:
+			removeParticleAt(x, y);
+			break;
+		};
+	}
+}
+
+void removeParticleAt(int x, int y) {
+	std::vector< unsigned char > pixels(3);
+	glReadPixels(
+	    x, glutGet( GLUT_WINDOW_HEIGHT ) - y,
+	    1, 1,
+	    GL_RGB, GL_UNSIGNED_BYTE, &pixels[0]
+	);
+	float color[3] = {0, 0, 0};
+	for (int i = 0; i < 3; i++) {
+		color[i] = (int)pixels[i] / 255.0;
+	}
+	std::cout << "Color: " << color[0] << ", " << color[1] << ", " << color[2] << std::endl;
+	int i = pSys.getByColor(color);
+	std::cout << "Target: particle " << i << " at " 
+			  << "(" << pSys.pos(i, 0) << ", " << pSys.pos(i, 1) << ", " << pSys.pos(i, 2) << ")" << std::endl;
+	if (i > -1) {
+		pSys.removeParticle(i);
 	}
 }

@@ -41,7 +41,7 @@ public:
     double mass(int i) const;
     double getBounds() const;
     int closestParticle(Particle p) const;
-
+    int getByColor(const float color[]) const;
     void printPositions() const;
 };
 

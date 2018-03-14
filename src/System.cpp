@@ -140,6 +140,22 @@ int System::closestParticle(Particle p) const {
     return result;
 }
 
+int System::getByColor(const float mColor[]) const {
+    for (int i = 0; i < size(); i++) {
+        int c = 0;
+        while (c < 3) {
+            if (mColor[c] != color(i, c)) {
+                break;
+            }
+            if (c == 2) {
+                return i;
+            }
+            c++;
+        }
+    }
+    return -1;
+}
+
 void System::printPositions() const {
     for (int i = 0; i < particles.size(); ++i) {
         Particle p = particles[i];

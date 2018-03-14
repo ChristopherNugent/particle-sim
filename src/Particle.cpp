@@ -10,7 +10,7 @@ Particle::Particle() {
     }
     mass = 0;
     for (int i = 0; i < 3; ++i) {
-        color[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        color[i] = rand() % 255 / 255.0;
     }
 
 };

@@ -4,10 +4,12 @@
 #include <stdlib.h>
 
 class Particle {
+private:
+    static constexpr double REBOUND = 0.75;
+    static constexpr double G = 6.674 * pow(10, -11);
+    
 public:
     static const int D = 3;
-    static constexpr double G = 6.674 * pow(10, -11);
-    static constexpr double REBOUND = 0.75;
 
     double pos[D];
     double vel[D];

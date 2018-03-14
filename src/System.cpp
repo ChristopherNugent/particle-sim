@@ -111,7 +111,7 @@ double System::mass(int i) const {
 }
 
 
-double System::getBounds() { 
+double System::getBounds() const { 
     return bounds; 
 }
 

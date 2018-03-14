@@ -38,8 +38,8 @@ public:
     double comPos(int d) const;
     double color(int i, int d) const;
     double mass(int i) const;
-    double getBounds();
-    
+    double getBounds() const;
+
     void printPositions() const;
 };
 

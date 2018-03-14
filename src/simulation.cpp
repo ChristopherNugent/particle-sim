@@ -133,7 +133,7 @@ void drawParticles() {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 	}
-	for (int i = 0; i < pSys.N; i++) {
+	for (int i = 0; i < pSys.size(); i++) {
 		glColor3f(pSys.particles[i].color[0], pSys.particles[i].color[1], pSys.particles[i].color[2]);
 
 		if (planets) {

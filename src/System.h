@@ -20,7 +20,7 @@ public:
     std::list<double> history;
     Particle com;
 
-    double totalMass;
+    // double totalMass;
     double bounds;
 
     System();
@@ -28,6 +28,8 @@ public:
     void update(double);
     void printPositions();
     int size();
+    void addParticle();
+    void removeParticle(int i=-1);
 };
 
 #endif

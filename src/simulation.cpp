@@ -215,6 +215,9 @@ void keyboardFunc(unsigned char Key, int x, int y) {
 	case 'e':	pSys.bounds++; break;
 	case 'q':	pSys.bounds--; break;
 
+
+	case 'n':	pSys.addParticle();		break;
+	case 'm':	pSys.removeParticle();	break;
 	// VISUAL TOGGLES
 	case 'b':	box = !box; 			break;
 	case 'l':	lighting = !lighting; 	break;

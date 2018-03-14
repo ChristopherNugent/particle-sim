@@ -4,7 +4,7 @@
 #include "System.h"
 
 System::System() {
-    totalMass = -1;
+    // totalMass = -1;
     bounds = 300;
     particles.resize(N);
 }
@@ -12,24 +12,45 @@ System::System() {
 void System::initParticles() {
     srand(time(0));
     history = {};
-    totalMass = 0;
+    // totalMass = 0;
     for (int i = 0; i < particles.size(); i++) {
         randomizeParticle(particles.at(i));
     }
 }
 
+void System::removeParticle(int i) {
+    if (particles.size() < 1) {
+        return;
+    }
+    if (i < 0) {
+        particles.pop_back();
+        return;
+    }
+    particles.at(i) = particles.back();
+    particles.pop_back();
+}
+
 void System::randomizeParticle(Particle& p) {
     double mass = MAX_MASS * randomFloat();
     p.mass = mass;
-    totalMass += mass;
     for (int j = 0; j < Particle::D; ++j) {
         p.pos[j] = 40 * randomFloat() - 20;
         p.vel[j] = 10 * randomFloat() - 5;
     }
 }
 
+void System::addParticle() {
+    Particle p;
+    randomizeParticle(p);
+    particles.push_back(p);
+}
+
 void System::updateCOMS() {
     Particle c;
+    double totalMass = 0;
+    for(int i =0; i < particles.size(); i++) {
+        totalMass += particles.at(i).mass;
+    }
     for (int i = 0; i < particles.size(); i++) {
         Particle p = particles[i];
         for (int d = 0; d < Particle::D; d++) {

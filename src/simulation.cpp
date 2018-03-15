@@ -66,12 +66,21 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(keyboardFunc);
 	glutMouseFunc(mouseFunc);
 	// LIGHTING SHENANIGANS
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { 1, 1, 	0.5 };
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
+	GLfloat yellow[] = { 1.0, 1.0, 0.0, 1.0 };
+	GLfloat red[] = { 1.0, 0.0, 0.0, 1.0 };
+	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+	glMaterialf(GL_FRONT, GL_SHININESS, 30);
+
+	// glLightfv(GL_LIGHT0, GL_AMBIENT, black);
+	// glLightfv(GL_LIGHT0, GL_DIFFUSE, yellow);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	GLfloat direction[] = { 1.0, 1.0, 1.0, 0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, direction);
+
 	// END LIGHTING SHENANIGANS
 	// END OPENGL SETUP
 
@@ -138,12 +147,22 @@ void drawParticles() {
 	if (lighting) {
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
+		GLfloat direction[] = { 1.0, 1.0, 1.0, 0.0 };
+		glLightfv(GL_LIGHT0, GL_POSITION, direction);
 	}
 	for (int i = 0; i < pSys.size(); i++) {
-		glColor3f(pSys.color(i, 0), pSys.color(i, 1), pSys.color(i, 2));
-
 		if (planets) {
 			glPushMatrix();
+			if (lighting) {
+				GLfloat colors[] = {0.0, 1, 0.0, 0.0};
+				for (int j = 0; j < 3; j++) {
+					colors[j] = pSys.color(i, j);
+				}
+				colors[3] = 1;
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colors);
+			} else {
+				glColor3f(pSys.color(i, 0), pSys.color(i, 1), pSys.color(i, 2));
+			}
 			glTranslatef(pSys.pos(i, 0) / DISTANCE_SCALE,
 			             pSys.pos(i, 1) / DISTANCE_SCALE,
 			             pSys.pos(i, 2) / DISTANCE_SCALE
@@ -156,6 +175,7 @@ void drawParticles() {
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 	}
+
 	// Draw center of mass
 	if (center) {
 		glColor3f(randomFloat(), randomFloat(), randomFloat());
@@ -270,6 +290,12 @@ void mouseFunc(int button, int state, int x, int y) {
 }
 
 void removeParticleAt(int x, int y) {
+	// Remove lighting effects if needed
+	if (lighting) {
+		lighting = false;
+		display();
+		lighting = true;
+	}
 	std::vector< unsigned char > pixels(3);
 	glReadPixels(
 	    x, glutGet( GLUT_WINDOW_HEIGHT ) - y,
@@ -287,6 +313,7 @@ void removeParticleAt(int x, int y) {
 	if (i > -1) {
 		pSys.removeParticle(i);
 	}
+
 }
 
 void printWelcome() {

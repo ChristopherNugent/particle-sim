@@ -1,4 +1,4 @@
-// Created by Christopher Nugent
+// System.h
 // 
 // The System class is used to manage a system of Particles in
 // an organized manner, and also provides other methods used

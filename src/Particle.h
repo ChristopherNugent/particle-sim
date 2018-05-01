@@ -1,3 +1,12 @@
+// Particle.h
+// Header file for Particle class
+//
+// Class to represent particle in 2D or 3D systems, which is
+// done here with a constant because I was lazy.
+//
+// Allows convenient particle-pair interactions from other
+// classes
+
 #ifndef PARTICLE_H
 #define PARTICLE_H
 #include <cmath>

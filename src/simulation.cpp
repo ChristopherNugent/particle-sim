@@ -1,9 +1,16 @@
+// simulation.cpp
+//
+// The main file for the particle simulation
+// 
+// Since the code works reasonably speedily and it
+// wouldn't be needed again, it was left mostly in
+// its messy state.
+
 #include <GL/glut.h>
 #include <string.h>
 #include <iostream>
 #include <cmath>
 #include "System.h"
-
 
 
 // Display refresh time
